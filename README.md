@@ -5,8 +5,8 @@ This is a web application that allows users to create, edit, and download resume
 ## Features
 
 - **Create and Edit Resumes**: Users can add, edit, and delete sections including personal information, work experience, education, skills, and custom sections.
-- **Drag-and-Drop**: Rearrange sections and entries using drag-and-drop.
-- **Save and Load**: Save resume data in the browser's local storage and reload it when returning to the app.
+- **Drag-and-Drop**: Rearrange sections and entries using drag-and-drop. (Coming soon)
+- **Save and Load**: Save resume data in the browser's local storage and reload it when returning to the app. (Coming soon)
 - **Download**: Export resumes in PDF or DOCX formats.
 
 ## Tech Stack
