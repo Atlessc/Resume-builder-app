@@ -9,6 +9,7 @@ import useStore from './ZustandStore';
 import { loadStateFromLocalStorage } from './helper/LoadStateFromLocalStorage';
 import { saveStateToLocalStorage } from './helper/SaveStateToLocalStorage';
 
+
 function App() {
   const setPersonalInfo = useStore((state) => state.setPersonalInfo);
   const addWorkExperience = useStore((state) => state.addWorkExperience);
@@ -36,15 +37,15 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/resume-form" element={<ResumeForm />} />
-        <Route path="/editor" element={<Editor />} />
-      </Routes>
-      <Footer />
-    </div>
+      <div>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/resume-form" element={<ResumeForm />} />
+          <Route path="/editor" element={<Editor />} />
+        </Routes>
+        <Footer />
+      </div>
   );
 }
 

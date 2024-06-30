@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDrag } from 'react-dnd';
 import useStore from '../../ZustandStore';
 import Modal from '../Modal/Modal';
 import Form from './Form';
