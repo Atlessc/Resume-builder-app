@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Form.css';
 
 const Form = ({ type, entry, index, isNew, onSave }) => {
   const [formData, setFormData] = useState(entry);
+
+  useEffect(() => {
+    setFormData(entry);
+  }, [entry]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

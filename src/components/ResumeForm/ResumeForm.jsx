@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../../ZustandStore';
+import { saveStateToLocalStorage } from '../../helper/SaveStateToLocalStorage';
 import './ResumeForm.css';
 
 function ResumeForm() {
@@ -16,6 +17,7 @@ function ResumeForm() {
     education: [{ institution: '', degree: '', startDate: '', endDate: '', description: '' }],
     skills: [''],
   });
+
   const { setPersonalInfo, addWorkExperience, addEducation, addSkills } = useStore();
   const navigate = useNavigate();
 
@@ -76,6 +78,10 @@ function ResumeForm() {
     formData.workExperience.forEach(exp => addWorkExperience(exp));
     formData.education.forEach(edu => addEducation(edu));
     addSkills(formData.skills);
+
+    // Save the current form data to localStorage
+    saveStateToLocalStorage(formData);
+
     navigate('/editor');
   };
 

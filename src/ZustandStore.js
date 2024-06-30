@@ -40,7 +40,7 @@ const useStore = create((set) => ({
   })),
 
   addSkills: (skills) => set((state) => ({
-    skills: skills,
+    skills,
   })),
 
   updateSkill: (index, skill) => set((state) => {

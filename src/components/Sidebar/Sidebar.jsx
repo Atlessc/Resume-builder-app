@@ -8,7 +8,7 @@ import './Sidebar.css';
 const SidebarItem = ({ type, name, onDelete, onClick, index }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: type,
-    item: { name, index },
+    item: { type, name, index },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -17,28 +17,70 @@ const SidebarItem = ({ type, name, onDelete, onClick, index }) => {
   return (
     <div ref={drag} className="sidebar-item" style={{ opacity: isDragging ? 0.5 : 1 }} onClick={onClick}>
       {name}
-      {onDelete && <button onClick={(e) => { e.stopPropagation(); onDelete(index); }} className="delete-button">Delete</button>}
+      {onDelete && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(index);
+          }}
+          className="delete-button"
+        >
+          Delete
+        </button>
+      )}
     </div>
   );
 };
 
 const Sidebar = () => {
-  const { personalInfo, workExperience, education, skills, customSections } = useStore((state) => ({
+  const {
+    personalInfo,
+    workExperience,
+    education,
+    skills,
+    customSections,
+    addCustomSection,
+    updatePersonalInfo,
+    addWorkExperience,
+    updateWorkExperience,
+    deleteWorkExperience,
+    addEducation,
+    updateEducation,
+    deleteEducation,
+    addSkills,
+    updateSkill,
+    deleteSkill,
+    updateCustomSectionEntry,
+    deleteCustomSection,
+  } = useStore((state) => ({
     personalInfo: state.personalInfo,
     workExperience: state.workExperience,
     education: state.education,
     skills: state.skills,
     customSections: state.customSections,
+    addCustomSection: state.addCustomSection,
+    updatePersonalInfo: state.updatePersonalInfo,
+    addWorkExperience: state.addWorkExperience,
+    updateWorkExperience: state.updateWorkExperience,
+    deleteWorkExperience: state.deleteWorkExperience,
+    addEducation: state.addEducation,
+    updateEducation: state.updateEducation,
+    deleteEducation: state.deleteEducation,
+    addSkills: state.addSkills,
+    updateSkill: state.updateSkill,
+    deleteSkill: state.deleteSkill,
+    updateCustomSectionEntry: state.updateCustomSectionEntry,
+    deleteCustomSection: state.deleteCustomSection,
   }));
 
   const [customSectionCounter, setCustomSectionCounter] = useState(customSections.length);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
-  const addSection = () => {
+  const handleAddSection = () => {
     const newSection = { type: 'customSection', name: `Custom Section ${customSectionCounter + 1}`, entries: [] };
     setCustomSectionCounter(customSectionCounter + 1);
-    useStore.getState().addCustomSection(newSection);
+    addCustomSection(newSection);
   };
 
   const handleAddNew = (type) => {
@@ -48,7 +90,7 @@ const Sidebar = () => {
     else if (type === 'skills') blankEntry = { skill: '' };
     else if (type === 'customSection') blankEntry = { title: '', content: '' };
     else if (type === 'personalInfo') blankEntry = { name: '', email: '', phone: '', address: '' };
-    
+
     setModalContent({ type, entry: blankEntry, isNew: true });
     setShowModal(true);
   };
@@ -60,90 +102,81 @@ const Sidebar = () => {
 
   const saveEntry = (type, entry, index, isNew) => {
     if (type === 'personalInfo') {
-      useStore.getState().updatePersonalInfo(entry);
+      updatePersonalInfo(entry);
     } else if (type === 'workExperience') {
-      if (isNew) useStore.getState().addWorkExperience(entry);
-      else useStore.getState().updateWorkExperience(index, entry);
+      if (isNew) addWorkExperience(entry);
+      else updateWorkExperience(index, entry);
     } else if (type === 'education') {
-      if (isNew) useStore.getState().addEducation(entry);
-      else useStore.getState().updateEducation(index, entry);
+      if (isNew) addEducation(entry);
+      else updateEducation(index, entry);
     } else if (type === 'skills') {
-      if (isNew) useStore.getState().addSkills([...skills, entry]);
-      else useStore.getState().updateSkill(index, entry);
+      if (isNew) addSkills([...skills, entry]);
+      else updateSkill(index, entry);
     } else if (type === 'customSection') {
-      if (isNew) useStore.getState().addCustomSectionEntry(entry);
-      else useStore.getState().updateCustomSectionEntry(index, entry);
+      if (isNew) addCustomSection(entry);
+      else updateCustomSectionEntry(index, entry);
     }
     setShowModal(false);
   };
 
-  const deleteEducation = (index) => {
-    useStore.getState().deleteEducation(index);
-  };
-
-  const deleteWorkExperience = (index) => {
-    useStore.getState().deleteWorkExperience(index);
-  };
-
-  const deleteSkill = (index) => {
-    useStore.getState().deleteSkill(index);
-  };
-
-  const deleteSection = (index) => {
-    useStore.getState().deleteCustomSection(index);
+  const handleDelete = (type, index) => {
+    if (type === 'workExperience') deleteWorkExperience(index);
+    else if (type === 'education') deleteEducation(index);
+    else if (type === 'skills') deleteSkill(index);
+    else if (type === 'customSection') deleteCustomSection(index);
   };
 
   return (
     <div className="sidebar">
       <h2>Sections</h2>
-      <SidebarItem type="section" name="Personal Info" onClick={() => handleEdit('personalInfo', personalInfo)} />
+      <SidebarItem type="personalInfo" name="Personal Info" onClick={() => handleEdit('personalInfo', personalInfo)} />
+
       <h3>Work Experience</h3>
       {workExperience.length > 0 && (
         <>
           {workExperience.map((exp, index) => (
-            <div key={`workExperience-${index}`}>
-              <SidebarItem 
-                type="workExperience" 
-                name={`${exp.company} - ${exp.role}`} 
-                onClick={() => handleEdit('workExperience', exp, index)} 
-                onDelete={() => deleteWorkExperience(index)} 
-                index={index} 
-              />
-            </div>
+            <SidebarItem
+              key={`workExperience-${index}`}
+              type="workExperience"
+              name={`${exp.company} - ${exp.role}`}
+              onClick={() => handleEdit('workExperience', exp, index)}
+              onDelete={() => handleDelete('workExperience', index)}
+              index={index}
+            />
           ))}
         </>
       )}
-      <button onClick={() => handleAddNew('workExperience')} className="add-button">Add New Exp</button>
+      <button onClick={() => handleAddNew('workExperience')} className="add-button">Add New Experience</button>
+
       <h3>Education</h3>
       {education.length > 0 && (
         <>
           {education.map((edu, index) => (
-            <div key={`education-${index}`}>
-              <SidebarItem 
-                type="education" 
-                name={`${edu.institution} - ${edu.degree}`} 
-                onClick={() => handleEdit('education', edu, index)} 
-                onDelete={() => deleteEducation(index)} 
-                index={index} 
-              />
-            </div>
+            <SidebarItem
+              key={`education-${index}`}
+              type="education"
+              name={`${edu.institution} - ${edu.degree}`}
+              onClick={() => handleEdit('education', edu, index)}
+              onDelete={() => handleDelete('education', index)}
+              index={index}
+            />
           ))}
         </>
       )}
-      <button onClick={() => handleAddNew('education')} className="add-button">Add New Edu</button>
+      <button onClick={() => handleAddNew('education')} className="add-button">Add New Education</button>
+
       <h3>Skills</h3>
       {skills.length > 0 && (
         <>
           {skills.map((skill, index) => (
-            <div key={`skills-${index}`}>
-              <SidebarItem 
-                type="skills" 
-                name={skill.skill} 
-                onClick={() => handleEdit('skills', skill, index)} 
-                onDelete={() => deleteSkill(index)} 
-                index={index} 
-              />
-            </div>
+            <SidebarItem
+              key={`skills-${index}`}
+              type="skills"
+              name={skill.skill}
+              onClick={() => handleEdit('skills', skill, index)}
+              onDelete={() => handleDelete('skills', index)}
+              index={index}
+            />
           ))}
         </>
       )}
@@ -155,12 +188,12 @@ const Sidebar = () => {
           key={section.name}
           type={section.type}
           name={section.name}
-          onDelete={() => deleteSection(index)}
           onClick={() => handleEdit('customSection', section, index)}
+          onDelete={() => handleDelete('customSection', index)}
           index={index}
         />
       ))}
-      <button onClick={addSection} className="add-button">Add New Section</button>
+      <button onClick={handleAddSection} className="add-button">Add New Section</button>
       <button onClick={() => handleAddNew('customSection')} className="add-button">Add New Custom Entry</button>
 
       <Modal show={showModal} onClose={() => setShowModal(false)}>
