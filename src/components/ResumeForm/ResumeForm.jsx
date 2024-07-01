@@ -88,11 +88,13 @@ function ResumeForm() {
   return (
     <form onSubmit={handleSubmit} className="resume-form">
       <h2>Personal Information</h2>
+      <div className="work-experience-entry">
       <input type="text" name="personalInfo-name" placeholder="Name" value={formData.personalInfo.name} onChange={handleChange} />
       <input type="email" name="personalInfo-email" placeholder="Email" value={formData.personalInfo.email} onChange={handleChange} />
       <input type="text" name="personalInfo-phone" placeholder="Phone" value={formData.personalInfo.phone} onChange={handleChange} />
       <input type="text" name="personalInfo-address" placeholder="Address" value={formData.personalInfo.address} onChange={handleChange} />
 
+      </div>
       <h2>Work Experience</h2>
       {formData.workExperience.map((exp, index) => (
         <div key={index} className="work-experience-entry">
