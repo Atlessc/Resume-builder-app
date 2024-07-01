@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { v4 as uuidv4 } from 'uuid';
 
 const useStore = create((set) => ({
   personalInfo: {},
@@ -12,7 +13,7 @@ const useStore = create((set) => ({
   updatePersonalInfo: (info) => set({ personalInfo: info }),
 
   addWorkExperience: (experience) => set((state) => ({
-    workExperience: [...state.workExperience, experience],
+    workExperience: [...state.workExperience, { ...experience, id: uuidv4() }],
   })),
 
   updateWorkExperience: (index, experience) => set((state) => {
@@ -26,7 +27,7 @@ const useStore = create((set) => ({
   })),
 
   addEducation: (education) => set((state) => ({
-    education: [...state.education, education],
+    education: [...state.education, { ...education, id: uuidv4() }],
   })),
 
   updateEducation: (index, education) => set((state) => {
@@ -40,7 +41,7 @@ const useStore = create((set) => ({
   })),
 
   addSkills: (skills) => set((state) => ({
-    skills,
+    skills: skills.map(skill => ({ ...skill, id: uuidv4() })),
   })),
 
   updateSkill: (index, skill) => set((state) => {
@@ -54,7 +55,7 @@ const useStore = create((set) => ({
   })),
 
   addCustomSection: (section) => set((state) => ({
-    customSections: [...state.customSections, section],
+    customSections: [...state.customSections, { ...section, id: uuidv4() }],
   })),
 
   updateCustomSectionEntry: (index, entry) => set((state) => {

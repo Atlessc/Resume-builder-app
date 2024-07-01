@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import useStore from '../../ZustandStore';
 import FormattingOptions from '../FormattingOptions/FormattingOptions';
 import Modal from '../Modal/Modal';
 import './Editor.css';
 import "../Sidebar/Sidebar.css";
 import "../Sidebar/Form.css";
-import { loadStateFromLocalStorage } from '../../helper/LoadStateFromLocalStorage';
 
 
 // SidebarItem component
 const SidebarItem = ({ type, name, onDelete, onClick, id }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id,
-    data: { type, name }
-  });
 
-  const style = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : 'none',
-    opacity: isDragging ? 0.5 : 1,
-  };
+  // const style = {
+  //   transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : 'none',
+  //   opacity: isDragging ? 0.5 : 1,
+  // };
 
   return (
-    <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="sidebar-item" onClick={onClick}>
+    <div 
+      // ref={setNodeRef} 
+      // style={style} 
+      className="sidebar-item" 
+      onClick={onClick}
+    >
       {name}
       {onDelete && (
         <button
@@ -212,13 +211,10 @@ const Form = ({ type, entry, index, isNew, onSave }) => {
 
 // Section component
 const Section = ({ type, title, entries, onEdit, onRemoveEntry, onRemoveSection }) => {
-  const { setNodeRef, isOver } = useDroppable({
-    id: type,
-  });
 
-  const style = {
-    backgroundColor: isOver ? '#e0e0e0' : 'white',
-  };
+  // const style = {
+  //   backgroundColor: isOver ? '#e0e0e0' : 'white',
+  // };
 
   // const onRemoveSection = (index) => {
   //   const updatedSections = [...resumeData.customSections];
@@ -229,7 +225,7 @@ const Section = ({ type, title, entries, onEdit, onRemoveEntry, onRemoveSection 
   //   }))};
 
   return (
-    <div ref={setNodeRef} className="section" style={style}>
+    <div className="section">
       <h3>{title} <button onClick={onRemoveSection}>-</button></h3>
       {entries.map((entry, index) => (
         <div key={entry.id} className="resume-entry" onClick={() => onEdit(type, entry, index)}>
@@ -285,11 +281,6 @@ function Editor() {
       customSections,
     });
   }, [personalInfo, workExperience, education, skills, customSections]);
-
-  useEffect(() => {
-
-    loadStateFromLocalStorage();
-  }, [resumeData]);
 
   const handleFormatChange = ({ type, value }) => {
     setFormattingOptions((prevOptions) => ({
@@ -388,10 +379,22 @@ function Editor() {
       }
     }
   };
+  
+  const exportToJson = () => {
+    const json = JSON.stringify(resumeData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'resume.json';
+    link.click();
+  };
+  
 
+  
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+        <>
       <div className="editor-container">
         <Sidebar handleEdit={handleEdit} handleAddNew={handleAddNew} handleAddSection={handleAddSection} handleDelete={handleDelete} />
         <div className="editor" style={{ backgroundColor: 'white' }}>
@@ -407,8 +410,12 @@ function Editor() {
             <Section type="skills" title="Skills" entries={resumeData.skills} onEdit={handleEdit} onRemoveEntry={handleRemoveEntry} onRemoveSection={handleRemoveSection} />
             <Section type="customSection" title="Custom Sections" entries={resumeData.customSections} onEdit={handleEdit} onRemoveEntry={handleRemoveEntry} onRemoveSection={handleRemoveSection} />
           </div>
+          <button onClick={exportToJson}>Export to JSON</button>
+          <br />
           <button onClick={() => handleDownload('PDF')}>Download as PDF</button>
+          <br />
           <button onClick={() => handleDownload('DOCX')}>Download as DOCX</button>
+          <br />
         </div>
       </div>
       <Modal show={showModal} onClose={() => setShowModal(false)}>
@@ -422,7 +429,7 @@ function Editor() {
           />
         )}
       </Modal>
-    </DndContext>
+      </>
   );
 }
 
