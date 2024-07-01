@@ -1,12 +1,13 @@
 .resume-form {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 20px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  width: 80%;
+  width: clamp(300px, 100vw, 2000px);
   margin: 20px auto;
 }
 
@@ -15,11 +16,18 @@
   color: #333;
 }
 
+.work-experience-entry {
+  display: flex;
+  flex-direction: column;
+  width: 95%;
+
+}
+
 .resume-form input,
 .resume-form textarea {
-  width: 100%;
+  width: 90%;
   padding: 10px;
-  margin: 10px 0;
+  margin: 10px auto;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
