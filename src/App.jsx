@@ -26,15 +26,15 @@ function App() {
     if (initialState.customSections) initialState.customSections.forEach(addCustomSection);
   }, [setPersonalInfo, addWorkExperience, addEducation, addSkills, addCustomSection]);
 
-  useEffect(() => {
-    const unsubscribe = useStore.subscribe(
-      (state) => {
-        saveStateToLocalStorage(state);
-      },
-      (state) => state
-    );
-    return () => unsubscribe();
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribe = useStore.subscribe(
+  //     (state) => {
+  //       saveStateToLocalStorage(state);
+  //     },
+  //     (state) => state
+  //   );
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
       <div>

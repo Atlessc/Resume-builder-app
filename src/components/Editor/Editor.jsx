@@ -6,6 +6,8 @@ import Modal from '../Modal/Modal';
 import './Editor.css';
 import "../Sidebar/Sidebar.css";
 import "../Sidebar/Form.css";
+import { loadStateFromLocalStorage } from '../../helper/LoadStateFromLocalStorage';
+
 
 // SidebarItem component
 const SidebarItem = ({ type, name, onDelete, onClick, id }) => {
@@ -218,6 +220,14 @@ const Section = ({ type, title, entries, onEdit, onRemoveEntry, onRemoveSection 
     backgroundColor: isOver ? '#e0e0e0' : 'white',
   };
 
+  // const onRemoveSection = (index) => {
+  //   const updatedSections = [...resumeData.customSections];
+  //   updatedSections.splice(index, 1);
+  //   setResumeData((prevData) => ({
+  //     ...prevData,
+  //     customSections: updatedSections
+  //   }))};
+
   return (
     <div ref={setNodeRef} className="section" style={style}>
       <h3>{title} <button onClick={onRemoveSection}>-</button></h3>
@@ -260,7 +270,7 @@ function Editor() {
   });
 
   useEffect(() => {
-    const data = localStorage.getItem('resumeData');
+    const data = localStorage.getItem('resume-storage');
     if (data) {
       setResumeData(JSON.parse(data));
     }
@@ -277,7 +287,8 @@ function Editor() {
   }, [personalInfo, workExperience, education, skills, customSections]);
 
   useEffect(() => {
-    localStorage.setItem('resumeData', JSON.stringify(resumeData));
+
+    loadStateFromLocalStorage();
   }, [resumeData]);
 
   const handleFormatChange = ({ type, value }) => {
@@ -377,6 +388,7 @@ function Editor() {
       }
     }
   };
+
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
